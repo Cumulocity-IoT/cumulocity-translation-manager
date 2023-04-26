@@ -16,6 +16,9 @@
   ],
   "author": "Software AG",
   "license": "ISC",
+  "repository": {
+    "url": "https://github.com/SoftwareAG/cumulocity-translation-manager"
+  },
   "dependencies": {
     "@angular/animations": "14.0.6",
     "@angular/cdk": "14.1.2",
@@ -50,7 +53,7 @@
   "c8y": {
     "application": {
       "name": "Translation Manager",
-      "description": "Manage translations dynamically",
+      "description": "Manage translations dynamically in Cumulocity IoT dynamically. Create feature requests or file issues in the corresponding github project.",
       "contextPath": "sag-ps-iot-pkg-translation-manager",
       "key": "sag-ps-iot-pkg-translation-manager-key",
       "globalTitle": "Translation Manager",
