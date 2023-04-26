@@ -1,0 +1,45 @@
+<div
+  (click)="editCell()"
+  *ngIf="!isCellEditable"
+  class="text-truncate pointer d-flex"
+  title="{{ context.value }}"
+>
+  <span *ngIf="!isCellEditable && context.value !== ''" class="text-truncate">
+    {{ context.value }}
+  </span>
+  <span
+    *ngIf="!isCellEditable && context.value === ''"
+    class="text-truncate"
+    title="{{ 'Add translation' | translate }}"
+  >
+    <em class="text-muted">{{ 'Add translation' | translate }}</em>
+  </span>
+  <i
+    c8yIcon="pencil"
+    title="{{ 'Edit translation' | translate }}"
+    class="showOnHover text-primary m-l-4"
+  ></i>
+</div>
+
+<div class="input-group input-group-sm" *ngIf="isCellEditable">
+  <input
+    type="text"
+    placeholder="{{ 'Add translation' | translate }}"
+    class="form-control"
+    #cellInput
+    [(ngModel)]="cellValue"
+  />
+  <div class="input-group-btn">
+    <button
+      class="btn btn-clean"
+      type="button"
+      title="{{ 'Cancel' | translate }}"
+      (click)="cancel()"
+    >
+      <i c8yIcon="times" class="text-danger"></i>
+    </button>
+    <button class="btn btn-clean" type="button" title="{{ 'Save' | translate }}" (click)="save()">
+      <i c8yIcon="check" class="text-primary"></i>
+    </button>
+  </div>
+</div>

@@ -1,0 +1,70 @@
+<div class="viewport-modal">
+  <div class="modal-header dialog-header">
+    <i c8yIcon="language1"></i>
+    <h4 *ngIf="isInputTextDisabled">{{ 'Edit term translations' | translate }}</h4>
+    <h4 *ngIf="!isInputTextDisabled">{{ 'Add term and translations' | translate }}</h4>
+  </div>
+  <div class="inner-scroll">
+    <div class="modal-body">
+      <div *ngIf="!isTranslationProvided" class="alert alert-warning max-width-100">
+        <span>{{ 'Please provide atleast one translation to save the key.' | translate }}</span>
+      </div>
+      <div [formGroup]="formGroup">
+        <div class="form-group">
+          <label translate>Key</label>
+          <input
+            class="form-control"
+            placeholder="{{ 'e.g. Group' | translate }}"
+            type="text"
+            formControlName="translationKey"
+            [(ngModel)]="languageFormModel.translationKey"
+            required
+          />
+          <c8y-messages>
+            <c8y-message
+              *ngIf="
+                !formGroup.get('translationKey').untouched &&
+                (!languageFormModel.translationKey ||
+                  formGroup.controls['translationKey'].errors?.invalidName)
+              "
+              translate
+              >This field is required.
+            </c8y-message>
+            <c8y-message
+              *ngIf="!formGroup.untouched && formGroup.controls['translationKey'].errors?.nameTaken"
+              translate
+              >Name is already taken.</c8y-message
+            >
+          </c8y-messages>
+        </div>
+        <div *ngFor="let code of langCodes">
+          <c8y-form-group>
+            <label>{{ langsDetail[code].nativeName | translate }}</label>
+            <input
+              class="form-control"
+              type="text"
+              formControlName="{{ code }}"
+              [(ngModel)]="languageFormModel[code]"
+              placeholder="{{ 'Add translation' | translate }} "
+            />
+          </c8y-form-group>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer separator">
+    <button class="btn btn-default" (click)="onCancel()" translate>Cancel</button>
+    <button
+      class="btn btn-primary"
+      [ngClass]="{ 'btn-pending': pendingStatus }"
+      (click)="onSaveButtonClicked()"
+      [disabled]="
+        (languageFormModel.translationKey && languageFormModel.translationKey.trim() === '') ||
+        !formGroup.valid
+      "
+      translate
+    >
+      Save
+    </button>
+  </div>
+</div>

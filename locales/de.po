@@ -1,0 +1,31 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: c8y.plugin\n"
+"Language: de\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Terms"
+msgstr "Begriffe"
+
+msgid "Add term"
+msgstr "Begriff hinzufügen"
+
+msgid "Add translation"
+msgstr "Übersetzung hinzufügen"
+
+msgid "Edit translation"
+msgstr "Übersetzung bearbeiten"
+
+msgid "Localization"
+msgstr "Lokalisierung"
+
+msgid "Add term and translations"
+msgstr "Begriff und Übersetzungen hinzufügen"
+
+msgid "Please provide atleast one translation to save the key."
+msgstr "Bitte mindestens eine Übersetzung angeben, damit der Pfad gespeichert werden kann"
+
+msgid "e.g. Group"
+msgstr "z.B. Gruppe"
