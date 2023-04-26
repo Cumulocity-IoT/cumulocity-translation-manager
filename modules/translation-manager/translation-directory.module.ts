@@ -15,6 +15,7 @@ import { TranslationDeactivateGuard } from './translation-deactivate.guard';
 import { TranslationDirectoryComponent } from './translation-directory.component';
 import { HttpClientModule } from '@angular/common/http';
 import { TranslationDirectoryNavigationFactory } from './translation-directory.factory';
+import { ImportTranslationModalComponent } from './import-translation/import-translation-modal.component';
 
 @NgModule({
   imports: [
@@ -34,6 +35,7 @@ import { TranslationDirectoryNavigationFactory } from './translation-directory.f
     TranslationDirectoryComponent,
     ManageTranslationModalComponent,
     ManageTranslationCellRendererComponent,
+    ImportTranslationModalComponent
   ],
   entryComponents: [ManageTranslationCellRendererComponent],
   providers: [

@@ -1,0 +1,27 @@
+<c8y-modal
+  title="{{ 'Upload Translation JSON' | translate }}"
+  (onClose)="onClose()"
+  (onDismiss)="onDismiss()"
+  [labels]="labels"
+  [disabled]="!mapping"
+  style="width: 100%"
+>
+  <c8y-form-group *ngIf="!json">
+    <label translate for="dropArea">Upload a *.json file</label>
+    <c8y-drop-area
+      id="dropArea"
+      class="drop-area-sm"
+      [accept]="'.json'"
+      [maxAllowedFiles]="1"
+      (dropped)="uploadFile($event)"
+      [loading]="isLoading"
+      [icon]="'upload'"
+      forceHideList="true"
+      [files]="files"
+    >
+    </c8y-drop-area>
+  </c8y-form-group>
+  <c8y-form-group *ngIf="json">
+    <pre>{{ json | json }}</pre>
+  </c8y-form-group>
+</c8y-modal>

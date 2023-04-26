@@ -16,11 +16,12 @@ import { TranslateService } from '@ngx-translate/core';
 import { cloneDeep, isEqual, assign } from 'lodash-es';
 import { PublicOptionsAppService } from '../../services/public-options-app.service';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { first } from 'rxjs/operators';
+import { first, take } from 'rxjs/operators';
 import { ManageTranslationCellRendererComponent } from './manage-translation-cell-renderer/manage-translation-cell-renderer.component';
 import { ManageTranslationModalComponent } from './manage-translation-modal/manage-translation-modal.component';
 import { TranslationEntry } from './translation-directory.model';
 import { TranslationDirectoryService } from './translation-directory.service';
+import { ImportTranslationModalComponent } from './import-translation/import-translation-modal.component';
 
 @Component({
   selector: 'dtm-translation-directory',
@@ -92,6 +93,16 @@ export class TranslationDirectoryComponent implements OnInit {
     this.initListenersTranslationItemActions();
 
     this.isTranslationsDataFetched = true;
+  }
+
+  async onImportClick(): Promise<void> {
+    const modalRef = this.modalService.show(ImportTranslationModalComponent);
+    const json = await modalRef.content.closeSubject
+      .pipe(take(1))
+      .toPromise();
+    if (json) {
+
+    }
   }
 
   async reload() {
