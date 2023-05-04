@@ -6,7 +6,7 @@ import { of } from 'rxjs';
 import { TranslationDirectoryModule } from './translation-directory.module';
 
 describe('TranslationDirectoryComponent', () => {
-  TestBed.configureTestingModule({
+  void TestBed.configureTestingModule({
     declarations: [],
     imports: [TranslationDirectoryModule],
   }).compileComponents();
@@ -22,11 +22,12 @@ describe('TranslationDirectoryComponent', () => {
   let config: GridConfig;
 
   const selectedItem: TranslationEntry = {
+    id: '',
     de: 'de',
     translationKey: 'embassy',
   };
 
-  beforeEach(async () => {
+  beforeEach(() => {
     const columns: ColumnConfig[] = [{ name: 'label', visible: true, sortOrder: '' }];
     const pagination: Pagination = { pageSize: 10, currentPage: 1 };
     const gridConfig: GridConfig = { columns, pagination };
@@ -127,6 +128,7 @@ describe('TranslationDirectoryComponent', () => {
       component.translationsData = [selectedItem];
       component.translationsDataCopy = [
         {
+          id: '',
           de: 'en',
           translationKey: 'embassy1',
         },
@@ -219,6 +221,7 @@ describe('TranslationDirectoryComponent', () => {
       component.translationsData = [selectedItem];
       component.translationsDataCopy = [
         {
+          id: '',
           de: 'en',
           translationKey: 'embassy1',
         },
@@ -239,6 +242,7 @@ describe('TranslationDirectoryComponent', () => {
       component.translationsData = [selectedItem];
       component.translationsDataCopy = [
         {
+          id: '',
           de: 'en',
           translationKey: 'embassy1',
         },
@@ -257,6 +261,7 @@ describe('TranslationDirectoryComponent', () => {
       component.translationsData = [selectedItem];
       component.translationsDataCopy = [
         {
+          id: '',
           de: 'en',
           translationKey: 'embassy1',
         },

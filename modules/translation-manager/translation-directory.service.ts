@@ -10,7 +10,7 @@ import {
 } from '@c8y/ngx-components';
 import { ColumnUtilService } from '@c8y/ngx-components/device-grid';
 import { TranslateService } from '@ngx-translate/core';
-import { merge, union, assign } from 'lodash-es';
+import { merge, union, assign } from 'lodash';
 import { TranslationEntry } from './translation-directory.model';
 import { PublicOptionsAppService } from '../../services/public-options-app.service';
 @Injectable({
@@ -43,8 +43,8 @@ export class TranslationDirectoryService extends DataGridService {
    * Stores the current applicationOptions object as options.json in public-options.
    * @returns The result of the API call.
    */
-  async saveOptionsJson() {
-    this.publicOptionsAppService.saveOptionsJson(this.applicationOptions);
+  saveOptionsJson() {
+    void this.publicOptionsAppService.saveOptionsJson(this.applicationOptions);
   }
 
   /**
@@ -126,18 +126,18 @@ export class TranslationDirectoryService extends DataGridService {
   }
 
   private mergeKeyAndLanguages(
-    translationKey: any,
+    translationKey: string,
     langCodes: string[],
     isDeleteActionEnabled: boolean,
     i18n: I18nExtra = {}
-  ) {
+  ): TranslationEntry {
     return merge(
       { translationKey },
       { isDeleteActionEnabled },
       ...langCodes.map((lang) => ({
         [lang]: i18n[lang] ? i18n[lang][translationKey] : undefined,
       }))
-    );
+    ) as TranslationEntry;
   }
 
   private add(code: string, key: string, value: string) {

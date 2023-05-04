@@ -5,17 +5,17 @@ import {
   FormControl,
   FormGroup,
   ValidationErrors,
-  ValidatorFn
+  ValidatorFn,
 } from '@angular/forms';
 import { Languages } from '@c8y/ngx-components';
-import { find } from 'lodash-es';
+import { find } from 'lodash';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { TranslationEntry } from '../translation-directory.model';
 import { TranslationDirectoryService } from '../translation-directory.service';
 
 @Component({
   selector: 'c8y-manage-translation-modal',
-  templateUrl: './manage-translation-modal.component.html'
+  templateUrl: './manage-translation-modal.component.html',
 })
 export class ManageTranslationModalComponent implements OnInit {
   translationEntry: TranslationEntry;
@@ -24,9 +24,9 @@ export class ManageTranslationModalComponent implements OnInit {
   langCodes: string[];
   isInputTextDisabled = true;
   formGroup: FormGroup;
-  languageFormModel: TranslationEntry = {};
+  languageFormModel: TranslationEntry = { id: '' };
   isTranslationProvided = true;
-  pendingStatus: boolean = false;
+  pendingStatus = false;
 
   onClose = new EventEmitter<void>();
   onSave = new EventEmitter<TranslationEntry>();
@@ -39,6 +39,7 @@ export class ManageTranslationModalComponent implements OnInit {
 
   ngOnInit(): void {
     const formControls = this.buildForm(!this.translationEntry);
+
     this.formGroup = this.formBuilder.group(formControls);
 
     if (this.translationEntry) {
@@ -49,22 +50,22 @@ export class ManageTranslationModalComponent implements OnInit {
     }
   }
 
-  async onSaveButtonClicked(): Promise<void> {
+  onSaveButtonClicked(): void {
     this.pendingStatus = true;
-    
+
     const normalizedEntry = this.directoryService.normalizeTranslationValues(
       this.languageFormModel
     );
-    const isTranslationProvided = this.directoryService.validateTranslationIsProvided(
-      normalizedEntry
-    );
+    const isTranslationProvided =
+      this.directoryService.validateTranslationIsProvided(normalizedEntry);
 
     if (!isTranslationProvided) {
       this.isTranslationProvided = false;
       this.pendingStatus = false;
+
       return;
     }
-    
+
     this.onSave.emit(this.languageFormModel);
   }
 
@@ -75,10 +76,11 @@ export class ManageTranslationModalComponent implements OnInit {
 
   validateTranslationKey(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      if (control.value && !control.value.trim()) {
+      const value = control.value as string;
+      if (value && !value.trim()) {
         return { invalidName: true };
       }
-      const isFound = find(this.translationsData, { translationKey: control.value });
+      const isFound = find(this.translationsData, { translationKey: value });
       return isFound ? { nameTaken: true } : null;
     };
   }
@@ -88,11 +90,11 @@ export class ManageTranslationModalComponent implements OnInit {
     const formControls = {
       translationKey: new FormControl(this.languageFormModel.translationKey, {
         validators: isNewKey ? [this.validateTranslationKey()] : [],
-        updateOn: 'blur'
-      })
+        updateOn: 'blur',
+      }),
     };
 
-    this.langCodes.forEach(languageCode => {
+    this.langCodes.forEach((languageCode) => {
       formControls[languageCode] = languageCode;
       this.languageFormModel[languageCode] = undefined;
     });
@@ -102,12 +104,15 @@ export class ManageTranslationModalComponent implements OnInit {
 
   private updateModel(): TranslationEntry {
     const formControls = this.translationEntry;
+
     this.languageFormModel = Object.assign({}, this.translationEntry);
+
     return formControls;
   }
 
   private canChangeTranslationKey(isNewKey: boolean): void {
     this.isInputTextDisabled = !isNewKey;
+
     if (isNewKey) {
       this.languageFormModel.translationKey = undefined;
     }

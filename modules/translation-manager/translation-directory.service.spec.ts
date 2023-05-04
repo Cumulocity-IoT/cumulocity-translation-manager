@@ -79,7 +79,7 @@ describe('TranslationDirectoryService', () => {
     it('It should add the translationData locally for Save call', () => {
       // given
       service.applicationOptions = new ApplicationOptions();
-      const entry = { de: 'Deutsch translation11' };
+      const entry = { de: 'Deutsch translation11', id: '' };
 
       // when
       service.saveTranslationLocally(entry, false);
@@ -94,7 +94,7 @@ describe('TranslationDirectoryService', () => {
       // given
       service.applicationOptions = new ApplicationOptions();
       service.applicationOptions.i18nExtra = { de: { test: 'testu' } };
-      const entry = { de: 'Deutsch translation11', translationKey: 'test' };
+      const entry = { de: 'Deutsch translation11', translationKey: 'test', id: '' };
 
       // when
       service.saveTranslationLocally(entry, true);
@@ -106,6 +106,7 @@ describe('TranslationDirectoryService', () => {
     it('It should validate when translation is provided', () => {
       // given
       const data = {
+        id: '',
         de: 'abc',
         translationKey: 'abc123',
       };
@@ -120,6 +121,7 @@ describe('TranslationDirectoryService', () => {
     it('It should validate when translation is not provided', () => {
       // given
       const data = {
+        id: '',
         de: '',
         translationKey: '',
       };
@@ -134,6 +136,7 @@ describe('TranslationDirectoryService', () => {
     it('It should normalize translationValues', () => {
       // given
       const entry: TranslationEntry = {
+        id: '',
         de: '   Deutsch translation  ',
         en: '',
         translationKey: ' color ',

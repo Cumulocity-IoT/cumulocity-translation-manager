@@ -1,0 +1,18 @@
+package.json
+package-lock.json
+node_modules
+ng1.ts
+extra-webpack.config.js
+polyfills.ts
+i18n.ts
+index.ts
+dist
+local_node_modules
+
+# jest
+coverage
+setup-jest.js
+jest.config.js
+jest-setup.json
+babel-jest-wrapper.js
+babel.config.js

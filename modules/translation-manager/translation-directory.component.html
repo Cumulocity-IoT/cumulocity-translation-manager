@@ -5,6 +5,17 @@
   <c8y-breadcrumb-item [label]="'Localization' | translate"></c8y-breadcrumb-item>
 </c8y-breadcrumb>
 
+<c8y-action-bar-item placement="left">
+  <button
+    title="{{ 'Import translation' | translate }}"
+    class="btn btn-link"
+    (click)="onImportClick()"
+  >
+    <i c8yIcon="download"></i>
+    {{ 'Import translation' | translate }}
+  </button>
+</c8y-action-bar-item>
+
 <c8y-action-bar-item [placement]="'right'">
   <button
     class="btn btn-link"

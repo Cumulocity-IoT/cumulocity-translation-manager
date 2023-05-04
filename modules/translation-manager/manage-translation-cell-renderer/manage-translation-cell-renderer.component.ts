@@ -7,6 +7,7 @@ import {
 } from '@c8y/ngx-components';
 import { TranslationDirectoryService } from '../translation-directory.service';
 import { TranslateService } from '@ngx-translate/core';
+import { TranslationEntry } from '../translation-directory.model';
 
 @Component({
   selector: 'c8y-cell-renderer',
@@ -15,8 +16,8 @@ import { TranslateService } from '@ngx-translate/core';
 export class ManageTranslationCellRendererComponent {
   private readonly FOCUS_RENDER_WAIT_TIME_IN_MS = 100;
   isCellEditable = false;
-  cellValue: string = '';
-  @ViewChild('cellInput') cellInput: ElementRef;
+  cellValue = '';
+  @ViewChild('cellInput') cellInput: ElementRef<HTMLInputElement>;
 
   constructor(
     public context: CellRendererContext,
@@ -25,19 +26,19 @@ export class ManageTranslationCellRendererComponent {
     private translateService: TranslateService
   ) {}
 
-  async save(): Promise<void> {
+  save(): Promise<void> {
     this.isCellEditable = false;
-    const previousCellValue: string = this.context.value;
+    const previousCellValue = this.context.value as string;
     const cellValueTrimed = this.cellValue.trim();
     this.context.value = cellValueTrimed;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     this.context.item[this.context.property.path] = cellValueTrimed;
-    const normalizedEntry = this.directoryService.normalizeTranslationValues(this.context.item);
+    const normalizedEntry = this.directoryService.normalizeTranslationValues(this.getItem());
     const isTranslationProvided =
       this.directoryService.validateTranslationIsProvided(normalizedEntry);
 
     if (!isTranslationProvided) {
-      this.removeTranslationDialog(previousCellValue);
-
+      void this.removeTranslationDialog(previousCellValue);
       return;
     }
 
@@ -45,12 +46,16 @@ export class ManageTranslationCellRendererComponent {
     this.directoryService.saveTranslationItem.emit();
   }
 
+  getItem(): TranslationEntry {
+    return this.context.item as TranslationEntry;
+  }
+
   cancel(): void {
     this.isCellEditable = false;
   }
 
   editCell(): void {
-    this.cellValue = this.context.value;
+    this.cellValue = this.context.value as string;
     this.isCellEditable = true;
 
     // Focuses the input box after the input text box is visible
@@ -61,17 +66,18 @@ export class ManageTranslationCellRendererComponent {
 
   private async removeTranslationDialog(previousCellValue: string): Promise<void> {
     try {
-      const title = gettext('Remove translation key?');
+      const title = gettext('Remove translation key?') as string;
       const body = this.translateService.instant(
         gettext(
           'You are going to remove the last translation for key "{{ key }}", so the key will be deleted. Do you want to proceed?'
-        ),
-        { key: this.context.item.translationKey }
-      );
+        ) as string,
+        { key: this.getItem().translationKey }
+      ) as string;
       await this.c8yModalService.confirm(title, body, Status.WARNING);
-      this.directoryService.deleteTranslationItem.emit(this.context.item);
+      this.directoryService.deleteTranslationItem.emit(this.getItem());
     } catch (ex) {
       this.context.value = previousCellValue;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       this.context.item[this.context.property.path] = previousCellValue;
     }
   }

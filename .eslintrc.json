@@ -1,0 +1,68 @@
+{
+  "ignorePatterns": ["*.spec.ts"],
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": ["tsconfig.json"],
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "overrides": [
+    {
+      "files": ["*.ts"],
+      "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/recommended-requiring-type-checking",
+        "plugin:prettier/recommended",
+        "prettier"
+      ],
+      "rules": {
+        "prettier/prettier": ["error"],
+        "no-console": ["error", { "allow": ["warn", "error"] }],
+        "no-unused-vars": "off",
+        "no-prototype-builtins": "off",
+        "@typescript-eslint/no-unused-vars": [
+          "warn",
+          { "vars": "all", "args": "none", "ignoreRestSiblings": false }
+        ],
+        "explicit-module-boundary-types": "off",
+        "@typescript-eslint/ban-ts-comment": "warn",
+        "@typescript-eslint/lines-between-class-members": [
+          "error",
+          "always",
+          { "exceptAfterSingleLine": true }
+        ],
+        // added to allow reactive forms validator reference
+        // » https://github.com/typescript-eslint/typescript-eslint/blob/main/packages/eslint-plugin/docs/rules/unbound-method.md#ignorestatic
+        "@typescript-eslint/unbound-method": [
+          "error",
+          {
+            "ignoreStatic": true
+          }
+        ],
+        "brace-style": ["error", "1tbs", { "allowSingleLine": false }],
+        "curly": "error"
+      }
+    },
+    // @see https://itnext.io/configure-prettier-and-eslint-with-angular-e7b4ce979cd8
+    // NOTE: WE ARE NOT APPLYING PRETTIER IN THIS OVERRIDE, ONLY @ANGULAR-ESLINT/TEMPLATE
+    {
+      "files": ["*.html"],
+      "extends": ["plugin:@angular-eslint/template/recommended"],
+      "rules": {}
+    },
+    // NOTE: WE ARE NOT APPLYING @ANGULAR-ESLINT/TEMPLATE IN THIS OVERRIDE, ONLY PRETTIER
+    {
+      "files": ["*.html"],
+      "extends": ["plugin:prettier/recommended"],
+      "rules": {
+        // NOTE: WE ARE OVERRIDING THE DEFAULT CONFIG TO ALWAYS SET THE PARSER TO ANGULAR (SEE BELOW)
+        "prettier/prettier": ["error", { "endOfLine": "auto", "parser": "angular" }]
+      }
+    }
+  ]
+}

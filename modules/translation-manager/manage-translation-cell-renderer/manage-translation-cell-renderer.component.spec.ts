@@ -15,15 +15,15 @@ describe('ManageTranslationCellRendererComponent', () => {
       deleteTranslationItem: { emit: jest.fn() },
       saveTranslationItem: { emit: jest.fn() },
       normalizeTranslationValues: jest.fn(),
-      isAssetTypeOrCustomProperty: jest.fn()
+      isAssetTypeOrCustomProperty: jest.fn(),
     };
 
     c8yModalServiceMock = {
-      confirm: jest.fn()
+      confirm: jest.fn(),
     };
 
     translateServiceMock = {
-      instant: jest.fn()
+      instant: jest.fn(),
     };
 
     contextMock = new CellRendererContext();
@@ -45,6 +45,7 @@ describe('ManageTranslationCellRendererComponent', () => {
       // given
       const cellVal = 'Deutsch translation';
       component.context.value = cellVal;
+      // @ts-ignore
       component.cellInput = { nativeElement: {} };
       component.cellInput.nativeElement.focus = jest.fn();
 
@@ -62,7 +63,7 @@ describe('ManageTranslationCellRendererComponent', () => {
       component.cellValue = '';
 
       // when
-      component.save();
+      void component.save();
 
       // expect
       expect(component.isCellEditable).not.toBeTruthy();
@@ -87,7 +88,7 @@ describe('ManageTranslationCellRendererComponent', () => {
       component.cellValue = 'sample';
 
       // when
-      component.save();
+      void component.save();
 
       // expect
       expect(component.context.value).toBe('sample');
@@ -101,10 +102,10 @@ describe('ManageTranslationCellRendererComponent', () => {
         .mockReturnValue(true);
 
       // when
-      component.save();
+      void component.save();
 
-      // expect
-      expect(translationDirectoryServiceMock.validateTranslationIsProvided('sample')).toBe(true);
+      const validate = translationDirectoryServiceMock.validateTranslationIsProvided('sample');
+      expect(validate).toBe(true);
       expect(spyDirectoryService).toHaveBeenCalled();
       expect(component.context.item).toStrictEqual({ de: '', translationKey: 'asset' });
     });

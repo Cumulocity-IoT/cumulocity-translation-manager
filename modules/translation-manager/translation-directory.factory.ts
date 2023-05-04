@@ -4,8 +4,8 @@ import { NavigatorNode, NavigatorNodeFactory, gettext } from '@c8y/ngx-component
 @Injectable()
 export class TranslationDirectoryNavigationFactory implements NavigatorNodeFactory {
   private readonly TRANSLATION_DIRECTORY_NAVIGATOR_NODE = new NavigatorNode({
-    parent: gettext('Configuration'),
-    label: gettext('Localization'),
+    parent: gettext('Configuration') as string,
+    label: gettext('Localization') as string,
     path: '/translation-directory',
     icon: 'language1',
     priority: 5,
