@@ -8,14 +8,14 @@ describe('ManageTranslationModalComponent', () => {
   let bsModelRef: BsModalRef;
   let directoryServiceMock: any;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     formBuilderMock = new FormBuilder();
     bsModelRef = new BsModalRef();
 
     directoryServiceMock = {
       validateTranslationIsProvided: jest.fn(),
       normalizeTranslationValues: jest.fn(),
-      isAssetTypeOrCustomProperty: jest.fn()
+      isAssetTypeOrCustomProperty: jest.fn(),
     };
 
     component = new ManageTranslationModalComponent(
@@ -25,6 +25,7 @@ describe('ManageTranslationModalComponent', () => {
     );
 
     component.translationEntry = {
+      id: '',
       de: 'Deutsch translation',
       en: undefined,
       es: undefined,
@@ -37,7 +38,7 @@ describe('ManageTranslationModalComponent', () => {
       ru: undefined,
       translationKey: null,
       zh_CN: undefined,
-      zh_TW: undefined
+      zh_TW: undefined,
     };
 
     component.langCodes = [
@@ -52,7 +53,7 @@ describe('ManageTranslationModalComponent', () => {
       'pt_BR',
       'ru',
       'zh_CN',
-      'zh_TW'
+      'zh_TW',
     ];
   });
 
@@ -71,7 +72,7 @@ describe('ManageTranslationModalComponent', () => {
         pt_BR: 'pt_BR',
         ru: 'ru',
         zh_CN: 'zh_CN',
-        zh_TW: 'zh_TW'
+        zh_TW: 'zh_TW',
       };
 
       // when
@@ -96,7 +97,7 @@ describe('ManageTranslationModalComponent', () => {
         translationKey: null,
         ru: 'ru',
         zh_CN: 'zh_CN',
-        zh_TW: 'zh_TW'
+        zh_TW: 'zh_TW',
       };
       component.translationEntry = undefined;
 
@@ -119,7 +120,8 @@ describe('ManageTranslationModalComponent', () => {
       component.onSaveButtonClicked();
 
       // expect
-      expect(directoryServiceMock.validateTranslationIsProvided('sample')).toBe(true);
+      const isProvided = directoryServiceMock.validateTranslationIsProvided('sample');
+      expect(isProvided).toBe(true);
       expect(spyDirectoryServiceIsTranslationProvided).toHaveBeenCalled();
       expect(component.onSave.emit).toBeDefined();
       expect(component.isTranslationProvided).toBe(true);

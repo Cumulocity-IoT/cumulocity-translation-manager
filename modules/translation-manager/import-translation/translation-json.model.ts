@@ -1,3 +1,3 @@
 export type TranslationJSON = {
-    [key: string]: string | TranslationJSON;
-}
+  [key: string]: string | TranslationJSON;
+};

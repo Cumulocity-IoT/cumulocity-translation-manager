@@ -13,7 +13,7 @@ import {
   Status,
 } from '@c8y/ngx-components';
 import { TranslateService } from '@ngx-translate/core';
-import { cloneDeep, isEqual, assign } from 'lodash-es';
+import { cloneDeep, isEqual, assign } from 'lodash';
 import { PublicOptionsAppService } from '../../services/public-options-app.service';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { first, take } from 'rxjs/operators';
@@ -22,6 +22,7 @@ import { ManageTranslationModalComponent } from './manage-translation-modal/mana
 import { TranslationEntry } from './translation-directory.model';
 import { TranslationDirectoryService } from './translation-directory.service';
 import { ImportTranslationModalComponent } from './import-translation/import-translation-modal.component';
+import { isEmpty } from 'lodash';
 
 @Component({
   selector: 'dtm-translation-directory',
@@ -30,16 +31,20 @@ import { ImportTranslationModalComponent } from './import-translation/import-tra
 export class TranslationDirectoryComponent implements OnInit {
   columns: Column[];
 
-  loadingItemsLabel: string = gettext('Loading translations...');
+  loadingItemsLabel = gettext('Loading translations...') as string;
 
   actionControls: ActionControl[] = [
     {
       type: BuiltInActionType.Edit,
-      callback: (selectedItem: TranslationEntry) => this.openTranslationModal(selectedItem),
+      callback: (selectedItem: TranslationEntry) => {
+        void this.openTranslationModal(selectedItem);
+      },
     },
     {
       type: BuiltInActionType.Delete,
-      callback: (selectedItem: TranslationEntry) => this.onItemDelete(selectedItem),
+      callback: (selectedItem: TranslationEntry) => {
+        void this.onItemDelete(selectedItem);
+      },
       showIf: (item: TranslationEntry) => item.isDeleteActionEnabled,
     },
   ];
@@ -52,11 +57,12 @@ export class TranslationDirectoryComponent implements OnInit {
 
   refresh = new EventEmitter();
 
-  disabled: boolean = true;
+  disabled = true;
 
-  isTranslationsDataChanged: boolean = false;
+  isTranslationsDataChanged = false;
 
-  isTranslationsDataFetched: boolean = false;
+  isTranslationsDataFetched = false;
+  langCodes: string[];
 
   constructor(
     private appStateService: AppStateService,
@@ -72,6 +78,7 @@ export class TranslationDirectoryComponent implements OnInit {
   @HostListener('window:beforeunload', ['$event'])
   onbeforeunload(event) {
     if (this.isChanged()) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       event.returnValue = false;
     }
   }
@@ -80,16 +87,17 @@ export class TranslationDirectoryComponent implements OnInit {
     this.isTranslationsDataFetched = false;
 
     const isPublicOptionsAppAvailable = await this.initPublicOptionsApp();
+
     this.disabled = !isPublicOptionsAppAvailable;
 
     if (this.disabled) {
       return;
     }
 
-    const langCodes = this.appStateService.getLangs();
+    this.langCodes = this.appStateService.getLangs() as string[];
 
-    this.initColumnConfiguration(langCodes);
-    await this.initTranslationData(langCodes);
+    this.initColumnConfiguration(this.langCodes);
+    await this.initTranslationData(this.langCodes);
     this.initListenersTranslationItemActions();
 
     this.isTranslationsDataFetched = true;
@@ -97,20 +105,36 @@ export class TranslationDirectoryComponent implements OnInit {
 
   async onImportClick(): Promise<void> {
     const modalRef = this.modalService.show(ImportTranslationModalComponent);
-    const json = await modalRef.content.closeSubject
-      .pipe(take(1))
-      .toPromise();
-    if (json) {
-
+    modalRef.content.languageCodes = [...this.langCodes];
+    const entries = await modalRef.content.closeSubject.pipe(take(1)).toPromise();
+    if (!isEmpty(entries)) {
+      for (const entry of entries) {
+        const merged = this.mergeIfNeeded(entry);
+        this.directoryService.saveTranslationLocally(merged);
+      }
+      this.refresh.emit();
+      this.isTranslationsDataChanged = true;
     }
+
+    modalRef.hide();
+  }
+
+  private mergeIfNeeded(entry: TranslationEntry): TranslationEntry {
+    const match = this.translationsData.find((t) => t.translationKey === entry.translationKey);
+    if (match) {
+      return Object.assign(match, entry);
+    } else {
+      this.translationsData.push(entry);
+    }
+    return entry;
   }
 
   async reload() {
     try {
       if (this.isChanged()) {
         await this.c8yModalService.confirm(
-          gettext('Reload'),
-          gettext('Reloading will remove your current changes. Do you want to continue?'),
+          gettext('Reload') as string,
+          gettext('Reloading will remove your current changes. Do you want to continue?') as string,
           Status.WARNING
         );
       }
@@ -121,12 +145,11 @@ export class TranslationDirectoryComponent implements OnInit {
     }
   }
 
-  async openTranslationModal(selectedItem?: TranslationEntry) {
-    const langCodes = this.appStateService.getLangs();
+  openTranslationModal(selectedItem?: TranslationEntry) {
     const initialState: { initialState: Partial<ManageTranslationModalComponent> } = {
       initialState: {
         translationEntry: selectedItem,
-        langCodes,
+        langCodes: this.langCodes,
         translationsData: this.translationsData,
         langsDetail: this.options.languages,
       },
@@ -153,17 +176,18 @@ export class TranslationDirectoryComponent implements OnInit {
     }
   }
 
-  async saveApplicationOptions() {
+  saveApplicationOptions() {
     this.isTranslationsDataChanged = false;
-    await this.directoryService.saveOptionsJson();
-    this.alertService.success(gettext('Translation configuration saved.'));
+    this.directoryService.saveOptionsJson();
+    this.alertService.success(gettext('Translation configuration saved.') as string);
     this.translationsDataCopy = cloneDeep(this.translationsData);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     this.options.langsDetails = {
       ...this.options.langsDetails,
       ...this.directoryService.applicationOptions.i18nExtra,
     };
     this.translateService.reloadLang(this.translateService.currentLang).subscribe((data) => {
-      this.translateService.setTranslation(this.translateService.currentLang, data);
+      this.translateService.setTranslation(this.translateService.currentLang, data as object);
       this.translateService.use(this.translateService.currentLang);
     });
   }
@@ -172,12 +196,12 @@ export class TranslationDirectoryComponent implements OnInit {
     if (this.isChanged()) {
       try {
         await this.c8yModalService.confirm(
-          gettext('Unsaved changes'),
+          gettext('Unsaved changes') as string,
           gettext(
             "There are unapplied changes which will be lost if you don't apply them. Do you still want to leave this page?"
-          ),
+          ) as string,
           Status.DANGER,
-          { ok: gettext('Leave page') }
+          { ok: gettext('Leave page') as string }
         );
         return true;
       } catch (ex) {
@@ -238,7 +262,7 @@ export class TranslationDirectoryComponent implements OnInit {
     }
   }
 
-  private addColumnsIntoDataGrid(langCode, index): Column {
+  private addColumnsIntoDataGrid(langCode: string, index: number): Column {
     const column = {
       name: langCode,
       header: this.getLangFromLangCode(langCode),
@@ -256,8 +280,8 @@ export class TranslationDirectoryComponent implements OnInit {
   async onItemDelete(selectedItem: TranslationEntry) {
     try {
       await this.c8yModalService.confirm(
-        gettext('Delete translation item'),
-        gettext('Are you sure you want to delete the item?'),
+        gettext('Delete translation item') as string,
+        gettext('Are you sure you want to delete the item?') as string,
         Status.DANGER
       );
       this.directoryService.saveTranslationLocally(selectedItem, true);
@@ -269,7 +293,7 @@ export class TranslationDirectoryComponent implements OnInit {
     this.refresh.emit();
   }
 
-  private getLangFromLangCode(langCode): string {
+  private getLangFromLangCode(langCode: string): string {
     if (this.options.languages[langCode]) {
       return this.options.languages[langCode].nativeName;
     }

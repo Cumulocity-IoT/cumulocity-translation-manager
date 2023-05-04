@@ -17,6 +17,6 @@ import './locales/de.po';
     TranslationDirectoryModule,
   ],
   providers: [BsModalRef],
-  bootstrap: [BootstrapComponent]
+  bootstrap: [BootstrapComponent],
 })
 export class AppModule {}

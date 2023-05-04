@@ -3,7 +3,7 @@
   (onClose)="onClose()"
   (onDismiss)="onDismiss()"
   [labels]="labels"
-  [disabled]="!mapping"
+  [disabled]="!json || !langCode"
   style="width: 100%"
 >
   <c8y-form-group *ngIf="!json">
@@ -16,10 +16,20 @@
       (dropped)="uploadFile($event)"
       [loading]="isLoading"
       [icon]="'upload'"
-      forceHideList="true"
+      [forceHideList]="true"
       [files]="files"
     >
     </c8y-drop-area>
+  </c8y-form-group>
+  <c8y-form-group *ngIf="json && !langCode">
+    <label>{{ 'Please select a language code' | translate }}</label>
+    <div class="c8y-select-wrapper">
+      <select class="form-control" [ngModel]="langCode">
+        <option *ngFor="let code of languageCodes">
+          {{ code }}
+        </option>
+      </select>
+    </div>
   </c8y-form-group>
   <c8y-form-group *ngIf="json">
     <pre>{{ json | json }}</pre>

@@ -26,15 +26,16 @@ export class PublicOptionsAppService {
    * @returns The result of the API call.
    */
   async saveOptionsJson(applicationOptions: ApplicationOptions) {
-    console.log('application: ', this.application);
-
     if (!this.application) {
       throw new Error('Public Options applications has not been initialized');
     }
 
-    return this.applicationService
-      .binary(this.application)
-      .updateFiles([{ path: 'options.json', contents: JSON.stringify(applicationOptions) as any }]);
+    return (
+      this.applicationService
+        .binary(this.application)
+        // @ts-ignore
+        .updateFiles([{ path: 'options.json', contents: JSON.stringify(applicationOptions) }])
+    );
   }
 
   /**
@@ -47,9 +48,9 @@ export class PublicOptionsAppService {
     ).substring(2)}`;
     const result = await this.fetchClient.fetch(OPTIONS_JSON);
     if (result.status >= 400) {
-      this.alertService.danger(gettext('No Cumulocity manifest found.'));
+      this.alertService.danger(gettext('No Cumulocity manifest found.') as string);
     }
-    return result.json();
+    return result.json() as Promise<ApplicationOptions>;
   }
 
   /**
@@ -66,8 +67,6 @@ export class PublicOptionsAppService {
       }
 
       this.application = data[0];
-
-      console.log('application: ', this.application);
 
       return true;
     } catch (error) {
@@ -99,8 +98,8 @@ export class PublicOptionsAppService {
       return true;
     } catch (error) {
       this.alertService.danger(
-        gettext('Failed to create public-options application. Check permissions.'),
-        error
+        gettext('Failed to create public-options application. Check permissions.') as string,
+        JSON.stringify(error)
       );
     }
 
@@ -127,7 +126,7 @@ export class PublicOptionsAppService {
     return {
       name: this.APP_NAME,
       contextPath: this.APP_NAME,
-      description: gettext('Application containing public options used by tenant.'),
+      description: gettext('Application containing public options used by tenant.') as string,
       key: `${this.APP_NAME}-key`,
       availability: ApplicationAvailability.MARKET,
       type: ApplicationType.HOSTED,

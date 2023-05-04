@@ -35,7 +35,7 @@ import { ImportTranslationModalComponent } from './import-translation/import-tra
     TranslationDirectoryComponent,
     ManageTranslationModalComponent,
     ManageTranslationCellRendererComponent,
-    ImportTranslationModalComponent
+    ImportTranslationModalComponent,
   ],
   entryComponents: [ManageTranslationCellRendererComponent],
   providers: [
