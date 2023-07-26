@@ -73,7 +73,7 @@ export class ManageTranslationModalComponent implements OnInit {
     this.onClose.emit();
   }
 
-  validateid(): ValidatorFn {
+  validateId(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if (control.value && !control.value.trim()) {
         return { invalidName: true };
@@ -84,10 +84,10 @@ export class ManageTranslationModalComponent implements OnInit {
   }
 
   private buildForm(isNewKey: boolean): { id: FormControl } {
-    this.canChangeid(isNewKey);
+    this.canChangeId(isNewKey);
     const formControls = {
       id: new FormControl(this.languageFormModel.id, {
-        validators: isNewKey ? [this.validateid()] : [],
+        validators: isNewKey ? [this.validateId()] : [],
         updateOn: 'blur'
       })
     };
@@ -106,7 +106,7 @@ export class ManageTranslationModalComponent implements OnInit {
     return formControls;
   }
 
-  private canChangeid(isNewKey: boolean): void {
+  private canChangeId(isNewKey: boolean): void {
     this.isInputTextDisabled = !isNewKey;
     if (isNewKey) {
       this.languageFormModel.id = undefined;
