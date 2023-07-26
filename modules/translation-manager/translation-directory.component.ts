@@ -11,6 +11,7 @@ import {
   OptionsService,
   Pagination,
   Status,
+  BulkActionControl,
 } from '@c8y/ngx-components';
 import { TranslateService } from '@ngx-translate/core';
 import { cloneDeep, isEqual, assign } from 'lodash-es';
@@ -27,6 +28,7 @@ import { TranslationDirectoryService } from './translation-directory.service';
   templateUrl: 'translation-directory.component.html',
 })
 export class TranslationDirectoryComponent implements OnInit {
+  
   columns: Column[];
 
   loadingItemsLabel: string = gettext('Loading translations...');
@@ -39,7 +41,13 @@ export class TranslationDirectoryComponent implements OnInit {
     {
       type: BuiltInActionType.Delete,
       callback: (selectedItem: TranslationEntry) => this.onItemDelete(selectedItem),
-      showIf: (item: TranslationEntry) => item.isDeleteActionEnabled,
+    },
+  ];
+
+  bulkActionControls: BulkActionControl[] = [
+    {
+      type: BuiltInActionType.Delete,
+      callback: (ids: string[]) => this.onDeleteTranslationsBulk(ids),
     },
   ];
 
@@ -182,9 +190,9 @@ export class TranslationDirectoryComponent implements OnInit {
 
   private getColumns(langCodes: string[]): Column[] {
     const keyColumn = {
-      name: 'translationKey',
+      name: 'id',
       header: 'Key',
-      path: 'translationKey',
+      path: 'id',
       filterable: true,
       positionFixed: true,
     };
@@ -216,8 +224,7 @@ export class TranslationDirectoryComponent implements OnInit {
   }
 
   private add(selectedItemInput: TranslationEntry) {
-    const selectedItem = assign(selectedItemInput, { isDeleteActionEnabled: true });
-    this.translationsData.push(selectedItem);
+    this.translationsData.push(selectedItemInput);
   }
 
   private remove(selectedItem: TranslationEntry) {
@@ -256,6 +263,28 @@ export class TranslationDirectoryComponent implements OnInit {
       // inteded empty
     }
     this.refresh.emit();
+  }
+
+  async onDeleteTranslationsBulk(ids: string[]) {
+  
+      await this.c8yModalService.confirm(
+        gettext('Delete translations'),
+        this.translateService.instant(
+          gettext(`You are about to delete translations: "{{ devices }}". Do you want to proceed?`),
+          { devices: ids }
+        ),
+        Status.DANGER,
+        { ok: gettext('Delete'), cancel: gettext('Cancel') }
+      );
+
+      const toDelete = ids.map((id) => this.translationsData.find(t => t.id === id)).filter(e => !!e);
+        for (const item of toDelete) {
+          this.directoryService.saveTranslationLocally(item, true);
+          this.remove(item);
+          this.isTranslationsDataChanged = true;
+          
+        }
+      this.refresh.emit();
   }
 
   private getLangFromLangCode(langCode): string {
