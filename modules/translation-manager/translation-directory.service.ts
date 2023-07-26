@@ -100,9 +100,7 @@ export class TranslationDirectoryService extends DataGridService {
   }
 
   private getTranslationValueKeys(entry: TranslationEntry): string[] {
-    return Object.keys(entry).filter(
-      (key) => !['isDeleteActionEnabled', 'id'].includes(key)
-    );
+    return Object.keys(entry).filter((key) => !['id'].includes(key));
   }
 
   private transformI18nToTranslationEntry(
@@ -112,28 +110,18 @@ export class TranslationDirectoryService extends DataGridService {
     const strings = union(
       ...langCodes.filter((lang) => i18n[lang]).map((lang) => Object.keys(i18n[lang]))
     );
-    return strings.map((id) =>
-      this.mergeKeyAndLanguages(id, langCodes, true, i18n)
-    );
+    return strings.map((id) => this.mergeKeyAndLanguages(id, langCodes, i18n));
   }
 
   private isExisting(i18nExtra: TranslationEntry[], name: string): unknown {
     let translationItem = i18nExtra.find(({ id }) => id === name);
-    if (translationItem && translationItem['isDeleteActionEnabled']) {
-      translationItem = assign(translationItem, { isDeleteActionEnabled: false });
-    }
+
     return translationItem;
   }
 
-  private mergeKeyAndLanguages(
-    id: any,
-    langCodes: string[],
-    isDeleteActionEnabled: boolean,
-    i18n: I18nExtra = {}
-  ) {
+  private mergeKeyAndLanguages(id: any, langCodes: string[], i18n: I18nExtra = {}) {
     return merge(
       { id },
-      { isDeleteActionEnabled },
       ...langCodes.map((lang) => ({
         [lang]: i18n[lang] ? i18n[lang][id] : undefined,
       }))

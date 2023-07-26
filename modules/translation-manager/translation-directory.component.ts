@@ -41,7 +41,6 @@ export class TranslationDirectoryComponent implements OnInit {
     {
       type: BuiltInActionType.Delete,
       callback: (selectedItem: TranslationEntry) => this.onItemDelete(selectedItem),
-      showIf: (item: TranslationEntry) => item.isDeleteActionEnabled,
     },
   ];
 
@@ -225,8 +224,7 @@ export class TranslationDirectoryComponent implements OnInit {
   }
 
   private add(selectedItemInput: TranslationEntry) {
-    const selectedItem = assign(selectedItemInput, { isDeleteActionEnabled: true });
-    this.translationsData.push(selectedItem);
+    this.translationsData.push(selectedItemInput);
   }
 
   private remove(selectedItem: TranslationEntry) {

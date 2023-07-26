@@ -109,9 +109,7 @@ describe('TranslationDirectoryComponent', () => {
       jest
         .spyOn(directoryServiceMock, 'getI18nExtra')
         .mockReturnValue([{ de: 'Deutsch translation' }]);
-      jest
-        .spyOn(directoryServiceMock, 'getAssetids')
-        .mockReturnValue([{ id: 'Building' }]);
+      jest.spyOn(directoryServiceMock, 'getAssetids').mockReturnValue([{ id: 'Building' }]);
 
       // when
       component.ngOnInit();
@@ -196,7 +194,6 @@ describe('TranslationDirectoryComponent', () => {
       expect(component.translationsData).toContainEqual({
         de: 'si',
         id: 'Site11',
-        isDeleteActionEnabled: true,
       });
       expect(component.isTranslationsDataChanged).toBe(true);
     });
