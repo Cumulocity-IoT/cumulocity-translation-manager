@@ -26,8 +26,6 @@ export class PublicOptionsAppService {
    * @returns The result of the API call.
    */
   async saveOptionsJson(applicationOptions: ApplicationOptions) {
-    console.log('application: ', this.application);
-
     if (!this.application) {
       throw new Error('Public Options applications has not been initialized');
     }
@@ -66,8 +64,6 @@ export class PublicOptionsAppService {
       }
 
       this.application = data[0];
-
-      console.log('application: ', this.application);
 
       return true;
     } catch (error) {
