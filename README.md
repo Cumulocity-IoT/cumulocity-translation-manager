@@ -80,7 +80,7 @@ Translations can be updated directly in the table or via the modal dialog.
 ### Plugin versions
 
 * Angular v 14.x
-* WebSDK v 1016.0.x
+* WebSDK v 1017.0.x
 
 **How to start**
 Change the target tenant and application you want to run this plugin on in the `package.json`.
@@ -88,7 +88,7 @@ Change the target tenant and application you want to run this plugin on in the `
 ```
 c8ycli server -u https://{{your-tenant}}.cumulocity.com/ --shell {{cockpit}}
 ```
-Keep in mind that this plugin needs to have an app (e.g. cockpit) running with at least the same version as this plugin. if your tenant contains an older version, use the c8ycli to create a cockpit clone running with at least v 1016.0.59! Upload this clone to the target tenant (e.g. cockpit-1016) and reference this name in the --shell command.
+Keep in mind that this plugin needs to have an app (e.g. cockpit) running with at least the same version as this plugin. if your tenant contains an older version, use the c8ycli to create a cockpit clone running with at least v 1017.0.x! Upload this clone to the target tenant (e.g. cockpit-1017) and reference this name in the --shell command.
 
 The widget plugin can be locally tested via the start script:
 
