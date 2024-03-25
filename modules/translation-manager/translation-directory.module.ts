@@ -7,6 +7,8 @@ import {
   HelpModule,
   HOOK_NAVIGATOR_NODES,
   HOOK_ROUTE,
+  hookNavigator,
+  hookRoute,
 } from '@c8y/ngx-components';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { ManageTranslationCellRendererComponent } from './manage-translation-cell-renderer/manage-translation-cell-renderer.component';
@@ -14,7 +16,6 @@ import { ManageTranslationModalComponent } from './manage-translation-modal/mana
 import { TranslationDeactivateGuard } from './translation-deactivate.guard';
 import { TranslationDirectoryComponent } from './translation-directory.component';
 import { HttpClientModule } from '@angular/common/http';
-import { TranslationDirectoryNavigationFactory } from './translation-directory.factory';
 
 @NgModule({
   imports: [
@@ -37,20 +38,19 @@ import { TranslationDirectoryNavigationFactory } from './translation-directory.f
   ],
   entryComponents: [ManageTranslationCellRendererComponent],
   providers: [
-    {
-      provide: HOOK_NAVIGATOR_NODES,
-      useClass: TranslationDirectoryNavigationFactory,
-      multi: true,
-    },
-    {
-      provide: HOOK_ROUTE,
-      useValue: {
-        path: 'translation-directory',
-        component: TranslationDirectoryComponent,
-        canDeactivate: [TranslationDeactivateGuard],
-      },
-      multi: true,
-    },
+    hookNavigator({
+      parent: 'Settings',
+      label: gettext('Localization'),
+      path: '/translation-directory',
+      icon: 'language1',
+      priority: 5,
+      preventDuplicates: true,
+    }),
+    hookRoute({
+      path: 'translation-directory',
+      component: TranslationDirectoryComponent,
+      canDeactivate: [TranslationDeactivateGuard],
+    }),
     TranslationDeactivateGuard,
   ],
 })
