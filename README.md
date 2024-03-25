@@ -4,7 +4,7 @@
 
 Manage your translations in Cumulocity IoT for all supported languages easily using the Translation UI Plugin. Translations can be added and updated using the Translation table. Translations are globally available in all Cumulocity applications running on the same Cumulocity tenant via the `public-options` application and its `options.json` file. 
 
-The Translation UI Plugin automatically register a new navigation entry in the left side navigation menu. The Translation Plugin can be accessed by navigating to `Configuration` -> `Localization`. 
+The Translation UI Plugin automatically register a new navigation entry in the left side navigation menu. The Translation Plugin can be accessed by navigating to `Settings` -> `Localization`. 
 
 > **Important:** If the Plugin is used in an application it needs to check if the `public-options` application exists. The `public-options` application is used to store and share translations to the different applications. In case the application doesn't exist, it will automatically be created in the Cumulocity tenant via the Translation UI Plugin. Creating this application requires `Admin` permission on `Application management`. Therefore, make sure the plugin is initally called with a user having the necessary permission, otherwise an error will be thrown.
 
