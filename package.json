@@ -1,6 +1,6 @@
 {
   "name": "translation-plugin",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Manage translations dynamically",
   "scripts": {
     "start": "c8ycli server -u {{C8Y_URL}} --shell cockpit",
